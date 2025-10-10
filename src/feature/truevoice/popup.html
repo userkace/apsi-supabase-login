@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>TrueVoice</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>TrueVoice</h1>
+      <a href="https://github.com/userkace/true-voice" target="_blank" class="github-link">
+        <img src="icons/github.svg" alt="GitHub" class="github-icon">
+      </a>
+    </div>
+
+    <div class="upload-container">
+      <input type="file" id="audio-upload" accept="audio/*" multiple>
+      <label for="audio-upload" class="upload-btn">
+        <span class="icon">🎵</span>
+        <span class="text">Choose Audio Files</span>
+      </label>
+      <p class="hint">or drag and drop files here</p>
+    </div>
+
+    <div id="clear-all-container" class="clear-all-container" style="display: none;">
+      <button id="clear-all-btn" class="clear-all-btn">Clear All</button>
+    </div>
+    <div id="file-list" class="file-list">
+      <!-- Uploaded files will appear here -->
+    </div>
+  </div>
+
+  <script src="hooks.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

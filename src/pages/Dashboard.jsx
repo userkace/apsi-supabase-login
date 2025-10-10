@@ -1,5 +1,6 @@
 import { useAuth } from '../context/AuthContext';
 import { Line, Bar, Doughnut } from 'react-chartjs-2';
+import TrueVoicePopup from '../components/TrueVoicePopup';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -206,7 +207,12 @@ export default function Dashboard() {
       </div>
 
       {/* Bottom Row */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        {/* TrueVoice Popup */}
+        <div className="md:col-span-1">
+          <TrueVoicePopup />
+        </div>
+
         {/* Activity Feed */}
         <div className="md:col-span-2 bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
           <h3 className="font-semibold text-lg mb-4">Recent Activity</h3>

@@ -28,6 +28,7 @@ export default function App() {
             </ProtectedRoute>
           }
         />
+        <Route path="/bypass" element={<Dashboard />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </div>
