@@ -9,13 +9,23 @@ const TrueVoicePopup = () => {
   const fileInputRef = useRef(null);
   const fileListRef = useRef(null);
 
+  const chromeStorage = (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) ? chrome.storage.local : null;
+  const hasWindow = typeof window !== 'undefined';
+
   // Load saved files on component mount
   useEffect(() => {
     const loadFiles = async () => {
       try {
-        const result = await chrome.storage.local.get('savedFiles');
-        if (result.savedFiles) {
-          setFiles(result.savedFiles);
+        if (chromeStorage) {
+          const result = await chromeStorage.get('savedFiles');
+          if (result.savedFiles) {
+            setFiles(result.savedFiles);
+          }
+        } else if (hasWindow) {
+          const stored = window.localStorage.getItem('savedFiles');
+          if (stored) {
+            setFiles(JSON.parse(stored));
+          }
         }
       } catch (err) {
         console.error('Failed to load files:', err);
@@ -23,13 +33,17 @@ const TrueVoicePopup = () => {
     };
 
     loadFiles();
-  }, []);
+  }, [chromeStorage, hasWindow]);
 
   // Save files to storage whenever they change
   useEffect(() => {
     const saveFiles = async () => {
       try {
-        await chrome.storage.local.set({ savedFiles: files });
+        if (chromeStorage) {
+          await chromeStorage.set({ savedFiles: files });
+        } else if (hasWindow) {
+          window.localStorage.setItem('savedFiles', JSON.stringify(files));
+        }
       } catch (err) {
         console.error('Failed to save files:', err);
       }
@@ -37,8 +51,12 @@ const TrueVoicePopup = () => {
 
     if (files.length > 0) {
       saveFiles();
+    } else if (chromeStorage) {
+      chromeStorage.remove('savedFiles');
+    } else if (hasWindow) {
+      window.localStorage.removeItem('savedFiles');
     }
-  }, [files]);
+  }, [files, chromeStorage, hasWindow]);
 
   const showError = (message) => {
     setError(message);
@@ -159,7 +177,11 @@ const TrueVoicePopup = () => {
 
   const clearAllFiles = () => {
     setFiles([]);
-    chrome.storage.local.remove('savedFiles');
+    if (chromeStorage) {
+      chromeStorage.remove('savedFiles');
+    } else if (hasWindow) {
+      window.localStorage.removeItem('savedFiles');
+    }
   };
 
   const toggleExpand = (fileId) => {
@@ -275,7 +297,7 @@ const TrueVoicePopup = () => {
                     <div className="mb-2">
                       <span className="font-medium">Prediction:</span>{' '}
                       <span className="text-green-400">
-                        {file.result.prediction || 'No prediction available'}
+                        {file.result.label || 'No prediction available'}
                       </span>
                     </div>
                     {file.result.confidence && (
